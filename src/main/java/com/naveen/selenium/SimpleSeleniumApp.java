@@ -2,11 +2,14 @@ package com.naveen.selenium;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,28 +40,41 @@ public class SimpleSeleniumApp {
         }
 
         WebDriver driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         try {
             driver.get("https://www.naukri.com/nlogin/login");
 
-            WebElement emailInput = driver.findElement(By.cssSelector("input[placeholder*='Email ID']"));
+            WebElement emailInput = waitForFirstVisible(wait,
+                    By.id("usernameField"),
+                    By.cssSelector("input[placeholder*='Email ID']"),
+                    By.cssSelector("input[placeholder*='Email']"),
+                    By.cssSelector("input[type='text']"));
             emailInput.clear();
             emailInput.sendKeys(email);
 
-            WebElement passwordInput = driver.findElement(By.cssSelector("input[type='password']"));
+            WebElement passwordInput = waitForFirstVisible(wait,
+                    By.id("passwordField"),
+                    By.cssSelector("input[type='password']"));
             passwordInput.clear();
             passwordInput.sendKeys(password);
 
-            WebElement loginButton = driver.findElement(By.cssSelector("button[type='submit']"));
+            WebElement loginButton = waitForFirstVisible(wait,
+                    By.cssSelector("button[type='submit']"),
+                    By.cssSelector("button.loginButton"));
             loginButton.click();
             Thread.sleep(4000);
 
-            WebElement myProfile = driver.findElement(By.cssSelector("a[href*=\"/mnjuser/profile\"]"));
+            WebElement myProfile = waitForFirstVisible(wait,
+                    By.cssSelector("a[href*='/mnjuser/profile']"),
+                    By.cssSelector("a[title*='Profile']"));
             myProfile.click();
             Thread.sleep(2000);
 
-            WebElement resumeFileInput = driver.findElement(By.id("attachCV"));
+            WebElement resumeFileInput = waitForFirstVisible(wait,
+                    By.id("attachCV"),
+                    By.cssSelector("input[type='file']"));
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", resumeFileInput);
             Thread.sleep(1000);
@@ -82,6 +98,18 @@ public class SimpleSeleniumApp {
             throw new IllegalArgumentException("Missing required environment variable: " + key);
         }
         return value;
+    }
+
+    private static WebElement waitForFirstVisible(WebDriverWait wait, By... selectors) {
+        TimeoutException lastException = null;
+        for (By selector : selectors) {
+            try {
+                return wait.until(ExpectedConditions.visibilityOfElementLocated(selector));
+            } catch (TimeoutException ex) {
+                lastException = ex;
+            }
+        }
+        throw new TimeoutException("Could not find element for selectors", lastException);
     }
 }
 
