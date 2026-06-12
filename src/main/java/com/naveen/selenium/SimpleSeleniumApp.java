@@ -32,12 +32,22 @@ public class SimpleSeleniumApp {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1280,1000");
         options.addArguments("--disable-notifications");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36");
+        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+        options.setExperimentalOption("useAutomationExtension", false);
         if (headless) {
             options.addArguments("--headless=new");
         }
 
         WebDriver driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+
+        // Hide webdriver fingerprint to avoid bot detection
+        ((JavascriptExecutor) driver).executeScript(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
         try {
             driver.get("https://www.naukri.com/nlogin/login");
