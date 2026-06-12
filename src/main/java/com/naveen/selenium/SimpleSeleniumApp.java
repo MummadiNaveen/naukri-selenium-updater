@@ -57,9 +57,17 @@ public class SimpleSeleniumApp {
             driver.findElement(By.id("usernameField")).sendKeys(email);
             driver.findElement(By.id("passwordField")).sendKeys(password);
             driver.findElement(By.cssSelector("button[type='submit']")).click();
-            Thread.sleep(5000);
+            Thread.sleep(7000);
 
-            driver.findElement(By.cssSelector("a[href*='/mnjuser/profile']")).click();
+            System.out.println("Page title: " + driver.getTitle());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+
+            try {
+                driver.findElement(By.cssSelector("a[href*='/mnjuser/profile']")).click();
+            } catch (Exception e) {
+                System.out.println("Profile link not found, navigating directly to profile URL");
+                driver.get("https://www.naukri.com/mnjuser/profile");
+            }
             Thread.sleep(4000);
             System.out.println("Page title: " + driver.getTitle());
             WebElement resumeFileInput = driver.findElement(By.id("attachCV"));
