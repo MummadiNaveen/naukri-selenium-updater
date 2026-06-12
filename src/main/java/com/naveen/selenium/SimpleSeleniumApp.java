@@ -8,17 +8,24 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.JavascriptExecutor;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 
 public class SimpleSeleniumApp {
 
+    private static final Path RESUME_DIR = Path.of("src", "main", "resources");
+
     public static void main(String[] args) throws InterruptedException {
         boolean headless = args.length > 0 && "--headless".equalsIgnoreCase(args[0]);
 
-        String email = "naveenjr15@gmail.com";
-        String password = "Nav@15M7E";
-        String resumeFile = "src/main/resources/Gowtham_sv_jr.pdf";
+        String email = requiredEnv("NAUKRI_EMAIL");
+        String password = requiredEnv("NAUKRI_PASSWORD");
+        String resumeFileName = requiredEnv("RESUME_FILE_NAME");
+        Path resumePath = RESUME_DIR.resolve(resumeFileName).toAbsolutePath();
+        if (!Files.exists(resumePath)) {
+            throw new IllegalArgumentException("Resume file not found at: " + resumePath);
+        }
 
         WebDriverManager.chromedriver().setup();
 
@@ -56,14 +63,21 @@ public class SimpleSeleniumApp {
             js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", resumeFileInput);
             Thread.sleep(1000);
 
-            Path resumePath = Path.of(resumeFile);
-            resumeFileInput.sendKeys(resumePath.toAbsolutePath().toString());
+            resumeFileInput.sendKeys(resumePath.toString());
             Thread.sleep(5000);
 
             System.out.println("Resume upload completed!");
         } finally {
             driver.quit();
         }
+    }
+
+    private static String requiredEnv(String key) {
+        String value = System.getenv(key);
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("Missing required environment variable: " + key);
+        }
+        return value;
     }
 }
 

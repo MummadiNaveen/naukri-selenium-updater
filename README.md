@@ -1,6 +1,6 @@
-# Facebook Login Selenium (Java + Maven)
+# Naukri Resume Updater (Java + Maven)
 
-This project contains one Selenium runner that opens the Facebook login page and prints the page title.
+This project logs into Naukri and uploads a resume file from `src/main/resources`.
 
 ## File
 
@@ -15,12 +15,18 @@ This project contains one Selenium runner that opens the Facebook login page and
 ## Run
 
 ```powershell
+ $env:NAUKRI_EMAIL="your_email"
+ $env:NAUKRI_PASSWORD="your_password"
+ $env:RESUME_FILE_NAME="Gowtham_sv_jr.pdf"
 mvn -q exec:java
 ```
 
 ## Run in headless mode
 
 ```powershell
+ $env:NAUKRI_EMAIL="your_email"
+ $env:NAUKRI_PASSWORD="your_password"
+ $env:RESUME_FILE_NAME="Gowtham_sv_jr.pdf"
 mvn -q exec:java "-Dexec.args=--headless"
 ```
 
