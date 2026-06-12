@@ -47,22 +47,20 @@ public class SimpleSeleniumApp {
             driver.get("https://www.naukri.com/nlogin/login");
 
             WebElement emailInput = waitForFirstVisible(wait,
-                    By.id("usernameField"),
-                    By.cssSelector("input[placeholder*='Email ID']"),
-                    By.cssSelector("input[placeholder*='Email']"),
-                    By.cssSelector("input[type='text']"));
+                    By.id("usernameField"));
+            System.out.println("Logging in with email: " + email);
             emailInput.clear();
             emailInput.sendKeys(email);
 
             WebElement passwordInput = waitForFirstVisible(wait,
-                    By.id("passwordField"),
-                    By.cssSelector("input[type='password']"));
+                    By.id("passwordField"));
+            System.out.println("Logging in with password: " + "*".repeat(password.length()));
             passwordInput.clear();
             passwordInput.sendKeys(password);
 
             WebElement loginButton = waitForFirstVisible(wait,
-                    By.cssSelector("button[type='submit']"),
-                    By.cssSelector("button.loginButton"));
+                    By.cssSelector("button[type='submit']"));
+            System.out.println("Clicking login button");
             loginButton.click();
             Thread.sleep(4000);
 
