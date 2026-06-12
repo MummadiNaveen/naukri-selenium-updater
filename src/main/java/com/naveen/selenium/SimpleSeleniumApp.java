@@ -67,6 +67,10 @@ public class SimpleSeleniumApp {
             Thread.sleep(5000);
 
             System.out.println("Resume upload completed!");
+        } catch (Exception ex) {
+            System.err.println("Naukri run failed: " + ex.getMessage());
+            ex.printStackTrace(System.err);
+            throw ex;
         } finally {
             driver.quit();
         }

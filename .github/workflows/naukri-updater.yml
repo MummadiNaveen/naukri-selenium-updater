@@ -18,10 +18,22 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Validate secrets and resume file
+      env:
+        NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
+        NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
+        RESUME_FILE_NAME: ${{ secrets.RESUME_FILE_NAME }}
+      run: |
+        test -n "$NAUKRI_EMAIL" || (echo "Missing secret: NAUKRI_EMAIL" && exit 1)
+        test -n "$NAUKRI_PASSWORD" || (echo "Missing secret: NAUKRI_PASSWORD" && exit 1)
+        test -n "$RESUME_FILE_NAME" || (echo "Missing secret: RESUME_FILE_NAME" && exit 1)
+        RESUME_PATH="src/main/resources/$RESUME_FILE_NAME"
+        test -f "$RESUME_PATH" || (echo "Resume file not found: $RESUME_PATH" && ls -la src/main/resources && exit 1)
+
     - name: Run Resume Updater
       env:
         NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
         NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
         RESUME_FILE_NAME: ${{ secrets.RESUME_FILE_NAME }}
-      run: mvn -q exec:java "-Dexec.args=--headless"
+      run: mvn -e exec:java "-Dexec.args=--headless"
 
