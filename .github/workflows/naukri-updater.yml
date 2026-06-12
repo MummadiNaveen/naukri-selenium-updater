@@ -35,5 +35,5 @@ jobs:
         NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
         NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
         RESUME_FILE_NAME: ${{ secrets.RESUME_FILE_NAME }}
-      run: mvn -e exec:java "-Dexec.args=--headless"
+      run: mvn -B -q -DskipTests compile exec:java "-Dexec.args=--headless"
 
