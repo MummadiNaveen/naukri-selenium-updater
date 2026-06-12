@@ -51,7 +51,7 @@ public class SimpleSeleniumApp {
 
             driver.findElement(By.cssSelector("a[href*='/mnjuser/profile']")).click();
             Thread.sleep(4000);
-
+            System.out.println("Page title: " + driver.getTitle());
             WebElement resumeFileInput = driver.findElement(By.id("attachCV"));
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", resumeFileInput);
