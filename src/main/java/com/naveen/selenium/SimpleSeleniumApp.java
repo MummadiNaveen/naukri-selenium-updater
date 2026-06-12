@@ -56,7 +56,14 @@ public class SimpleSeleniumApp {
 
             driver.findElement(By.id("usernameField")).sendKeys(email);
             driver.findElement(By.id("passwordField")).sendKeys(password);
-            driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+            try {
+                driver.findElement(By.cssSelector("button.blue-btn")).click();
+                System.out.println("Clicked login button using CSS selector");
+            } catch (Exception e) {
+                System.out.println("Login button not found using CSS selector, trying XPath");
+                driver.findElement(By.xpath("//button[contains(text(), 'Login')]")).click();
+            }
             Thread.sleep(7000);
 
             System.out.println("Page title: " + driver.getTitle());
