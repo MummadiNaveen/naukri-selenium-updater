@@ -35,9 +35,12 @@ public class SimpleSeleniumApp {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-blink-features=AutomationControlled");
-        options.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36");
+        options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36");
+        options.addArguments("--accept-lang=en-US,en;q=0.9");
+        options.addArguments("--lang=en-US");
         options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
         options.setExperimentalOption("useAutomationExtension", false);
+        options.setExperimentalOption("w3c", false);
         if (headless) {
             options.addArguments("--headless=new");
         }
@@ -47,7 +50,11 @@ public class SimpleSeleniumApp {
 
         // Hide webdriver fingerprint to avoid bot detection
         ((JavascriptExecutor) driver).executeScript(
-            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});" +
+            "window.chrome = {runtime: {}};" +
+            "Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});" +
+            "Object.defineProperty(navigator, 'languages', {get: () => ['en-US']});"
+        );
 
         try {
             driver.get("https://www.naukri.com/nlogin/login");
